@@ -63,3 +63,9 @@ END {
     if (pilihan == "e") print "Jumlah penumpang business class ada " bisnis " orang"
 }
 ```
+
+## Output
+
+<img width="537" height="414" alt="output" src="https://github.com/user-attachments/assets/a2e66f78-2266-400a-9b9c-48573656b2fc" />
+
+---
