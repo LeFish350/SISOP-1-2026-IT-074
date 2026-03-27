@@ -4,7 +4,7 @@
 
 | No | Nama | NRP |
 |---|---|---|
-| 1 | Mahrinza Redouane Zakariyah | 5027241074 |
+| 1 | Mahrinza Redouane Zakariyah | 5027251074 |
 
 ---
 
@@ -74,7 +74,8 @@ END {
 
 #### Penjelasan
 
-**parserkoordinat**
+**parserkoordinat.sh**
+
 Langkah pertama pada penyelesaian ekspedisi ini adalah membersihkan dan mengekstrak data dari file gsxtrack.json. Script ini menggunakan perintah awk dengan memanfaatkan regex gsub untuk menghilangkan karakter yang tidak diperlukan selain angka dan tanda baca titik/minus, lalu menyimpannya dalam format id, site_name, latitude, longitude ke dalam file titik-penting.txt.
 
 ```
@@ -85,3 +86,23 @@ awk -F'"' '
 /longitude/ {lon=$3; gsub(/[^0-9.-]/, "", lon); print id "," nama "," lat "," lon}
 ' gsxtrack.json > titik-penting.txt
 ```
+
+**nemupusaka.sh**
+
+Setelah data koordinat rapi, script selanjutnya bertugas mencari titik simetri diagonal dengan mengambil data dari baris pertama (node_001) dan baris ketiga (node_003). Program kemudian menghitung nilai tengah berdasarkan rumus matematika dan menyimpannya ke dalam file posisipusaka.txt.
+
+```
+awk -F',' '
+NR==1 {lat1=$3; lon1=$4}
+NR==3 {lat2=$3; lon2=$4}
+END {
+    tengah_lat = (lat1 + lat2) / 2
+    tengah_lon = (lon1 + lon2) / 2
+    print "Koordinat pusat:"
+    print tengah_lat ", " tengah_lon
+}
+' titik-penting.txt > posisipusaka.txt
+```
+
+## Output
+
