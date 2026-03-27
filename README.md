@@ -106,3 +106,20 @@ END {
 
 ## Output
 
+**Output nemupusaka**
+
+<img width="604" height="74" alt="Output_nemu-pusaka" src="https://github.com/user-attachments/assets/a70a00f0-8288-4d87-9330-e0d992d86d9b" />
+
+**Output paserkoordinat**
+
+<img width="621" height="106" alt="Output_parserkoordinat" src="https://github.com/user-attachments/assets/9e8f9162-8af0-4cb6-869a-b01e69b808b7" />
+
+**Output posisipusaka**
+
+<img width="603" height="68" alt="Output_posisipusaka" src="https://github.com/user-attachments/assets/ad98a650-6baa-4f49-804c-bd0c187e579e" />
+
+**Output titik-penting**
+
+<img width="599" height="103" alt="Output_titik-penting" src="https://github.com/user-attachments/assets/0f511990-4adf-418f-ad3e-c91d346c2cb7" />
+
+---
