@@ -69,3 +69,19 @@ END {
 <img width="537" height="414" alt="output" src="https://github.com/user-attachments/assets/a2e66f78-2266-400a-9b9c-48573656b2fc" />
 
 ---
+
+## Soal 2
+
+#### Penjelasan
+
+**parserkoordinat**
+Langkah pertama pada penyelesaian ekspedisi ini adalah membersihkan dan mengekstrak data dari file gsxtrack.json. Script ini menggunakan perintah awk dengan memanfaatkan regex gsub untuk menghilangkan karakter yang tidak diperlukan selain angka dan tanda baca titik/minus, lalu menyimpannya dalam format id, site_name, latitude, longitude ke dalam file titik-penting.txt.
+
+```
+awk -F'"' '
+/id/ {id=$4}
+/site_name/ {nama=$4}
+/latitude/ {lat=$3; gsub(/[^0-9.-]/, "", lat)}
+/longitude/ {lon=$3; gsub(/[^0-9.-]/, "", lon); print id "," nama "," lat "," lon}
+' gsxtrack.json > titik-penting.txt
+```
