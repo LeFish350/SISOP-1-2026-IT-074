@@ -1,1 +1,167 @@
 # SISOP-1-2026-IT-074
+
+## Member
+
+| No | Nama | NRP |
+|---|---|---|
+| 1 | Mahrinza Redouane Zakariyah | 5027251074 |
+
+---
+
+## Reporting
+
+### Soal 1
+
+#### Penjelasan
+
+**KANJ.sh**
+
+Pada soal pertama ini, kita diminta untuk mengolah data `passenger.csv` menggunakan `awk`. Langkah pertama yang dilakukan adalah menginisialisasi pembatas kolom (koma) dan mengambil opsi inputan user (a, b, c, d, atau e) dari argumen terminal, sekaligus menangani jika inputan tidak valid.
+
+```awk
+BEGIN {
+    FS = ","
+    pilihan = ARGV[2]
+    delete ARGV[2]
+    if (pilihan != "a" && pilihan != "b" && pilihan != "c" && pilihan != "d" && pilihan != "e") {
+        print "Soal tidak dikenali. Gunakan a, b, c, d, atau e."
+        exit
+    }
+}
+```
+
+Selanjutnya, program akan melompati baris pertama (header) dan mulai mengumpulkan data yang diperlukan: menghitung total penumpang, mencatat gerbong unik ke dalam array, mencari usia maksimal beserta namanya, menjumlahkan total usia untuk rata-rata, dan menghitung jumlah penumpang Business Class.
+
+```awk
+NR > 1 {
+    total = total + 1
+    gerbong[$4] = 1
+    if ($2 > usia_maks) {
+        usia_maks = $2
+        nama = $1
+    }
+    total_usia = total_usia + $2
+    if ($3 == "Business") {
+        bisnis = bisnis + 1
+    }
+}
+```
+Terakhir, blok END akan mengeksekusi dan menampilkan output yang sesuai dengan opsi pilihan huruf yang dimasukkan oleh user saat menjalankan script.
+
+```awk
+END {
+    if (pilihan == "a") print "Jumlah seluruh penumpang KANJ adalah " total " orang"
+    if (pilihan == "b") {
+        for (g in gerbong) total_gerbong = total_gerbong + 1
+        print "Jumlah gerbong penumpang KANJ adalah " total_gerbong
+    }
+    if (pilihan == "c") print nama " adalah penumpang kereta tertua dengan usia " usia_maks " tahun"
+    if (pilihan == "d") {
+        rata = total_usia / total
+        printf "Rata-rata usia penumpang adalah %.0f tahun\n", rata
+    }
+    if (pilihan == "e") print "Jumlah penumpang business class ada " bisnis " orang"
+}
+```
+
+## Output
+
+<img width="537" height="414" alt="output" src="https://github.com/user-attachments/assets/a2e66f78-2266-400a-9b9c-48573656b2fc" />
+
+## Revisi
+
+#### 1. Output Opsi B
+- **Kendala:** Output yang dihasilkan adalah 3, padahal seharusnya 4. Hal ini terjadi karena program salah membaca indeks, program membaca kolom ke-3 (`$3`), padahal data nama gerbong berada di kolom ke-4.
+- **Revisi:** Mengubah target kolom pembacaan *array* gerbong menjadi kolom ke-4.
+```awk
+#Kode Sebelum Revisi
+gerbong[$3] = 1
+
+#Kode Sesudah Revisi
+gerbong[$4] = 1
+```
+
+#### 2. Output Opsi D
+- **Kendala:** Output yang dihasilkan tidak tepat 37 tahun karena adanya sisa nilai desimal dari hasil pembagian yang dibulatkan otomatis ke atas oleh sistem.
+- **Revisi:** Menambahkan fungsi pembulatan angka ke bawah (int()) pada perhitungan rata-rata usia di blok END untuk membuang sisa angka desimal.
+```awk
+#Kode Sebelum Revisi
+rata_rata = total_usia / total_penumpang
+
+#Kode Sesudah Revisi
+rata_rata = int(total_usia / total_penumpang)
+```
+
+#### 3. Output Opsi E
+- **Kendala:** Hasil perhitungan penumpang Business Class kosong atau tidak bertambah. Penyebabnya: target kolom yang salah, serta ketidaksesuaian teks (di CSV tertulis Business, bukan Business Class).
+- **Revisi:** Memindahkan target pengecekan ke kolom ke-3, dan menyesuaikan teks yang dicari.
+```awk
+#Kode Sebelum Revisi
+if ($4 == "Business Class") {
+    total_bisnis = total_bisnis + 1
+}
+#Kode Sesudah Revisi
+if ($3 == "Business") {
+    total_bisnis = total_bisnis + 1
+}
+```
+
+## Output Setelah Revisi
+
+<img width="578" height="402" alt="Output Setelah Revisi" src="https://github.com/user-attachments/assets/fb0ec5a8-9a10-49d1-a944-ca90ba350075" />
+
+---
+
+## Soal 2
+
+#### Penjelasan
+
+**parserkoordinat.sh**
+
+Langkah pertama pada penyelesaian ekspedisi ini adalah membersihkan dan mengekstrak data dari file gsxtrack.json. Script ini menggunakan perintah awk dengan memanfaatkan regex gsub untuk menghilangkan karakter yang tidak diperlukan selain angka dan tanda baca titik/minus, lalu menyimpannya dalam format id, site_name, latitude, longitude ke dalam file titik-penting.txt.
+
+```
+awk -F'"' '
+/id/ {id=$4}
+/site_name/ {nama=$4}
+/latitude/ {lat=$3; gsub(/[^0-9.-]/, "", lat)}
+/longitude/ {lon=$3; gsub(/[^0-9.-]/, "", lon); print id "," nama "," lat "," lon}
+' gsxtrack.json > titik-penting.txt
+```
+
+**nemupusaka.sh**
+
+Setelah data koordinat rapi, script selanjutnya bertugas mencari titik simetri diagonal dengan mengambil data dari baris pertama (node_001) dan baris ketiga (node_003). Program kemudian menghitung nilai tengah berdasarkan rumus matematika dan menyimpannya ke dalam file posisipusaka.txt.
+
+```
+awk -F',' '
+NR==1 {lat1=$3; lon1=$4}
+NR==3 {lat2=$3; lon2=$4}
+END {
+    tengah_lat = (lat1 + lat2) / 2
+    tengah_lon = (lon1 + lon2) / 2
+    print "Koordinat pusat:"
+    print tengah_lat ", " tengah_lon
+}
+' titik-penting.txt > posisipusaka.txt
+```
+
+## Output
+
+**Output nemupusaka**
+
+<img width="604" height="74" alt="Output_nemu-pusaka" src="https://github.com/user-attachments/assets/a70a00f0-8288-4d87-9330-e0d992d86d9b" />
+
+**Output paserkoordinat**
+
+<img width="621" height="106" alt="Output_parserkoordinat" src="https://github.com/user-attachments/assets/9e8f9162-8af0-4cb6-869a-b01e69b808b7" />
+
+**Output posisipusaka**
+
+<img width="603" height="68" alt="Output_posisipusaka" src="https://github.com/user-attachments/assets/ad98a650-6baa-4f49-804c-bd0c187e579e" />
+
+**Output titik-penting**
+
+<img width="599" height="103" alt="Output_titik-penting" src="https://github.com/user-attachments/assets/0f511990-4adf-418f-ad3e-c91d346c2cb7" />
+
+---
