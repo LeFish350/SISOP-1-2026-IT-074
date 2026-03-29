@@ -11,7 +11,7 @@ BEGIN {
 }
 NR > 1 {
     total_penumpang = total_penumpang + 1
-    gerbong[$3] = 1
+    gerbong[$4] = 1 # Revisi 1
     
     if ($2 > usia_maksimal) {
         usia_maksimal = $2
@@ -20,7 +20,8 @@ NR > 1 {
     
     total_usia = total_usia + $2
     
-    if ($4 == "Business Class") {
+    if ($3 == "Business") # Revisi 2
+    { 
         total_bisnis = total_bisnis + 1
     }
 }
@@ -36,7 +37,7 @@ END {
         print nama_tertua " adalah penumpang kereta tertua dengan usia " usia_maksimal " tahun"
     }
     if (pilihan == "d") {
-        rata_rata = total_usia / total_penumpang
+        rata_rata = int(total_usia / total_penumpang) # Revisi 3
         printf "Rata-rata usia penumpang adalah %.0f tahun\n", rata_rata
     }
     if (pilihan == "e") {
