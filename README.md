@@ -68,6 +68,48 @@ END {
 
 <img width="537" height="414" alt="output" src="https://github.com/user-attachments/assets/a2e66f78-2266-400a-9b9c-48573656b2fc" />
 
+## Revisi
+
+#### 1. Output Opsi B
+- **Kendala:** Output yang dihasilkan adalah 3, padahal seharusnya 4. Hal ini terjadi karena program salah membaca indeks, program membaca kolom ke-3 (`$3`), padahal data nama gerbong berada di kolom ke-4.
+- **Revisi:** Mengubah target kolom pembacaan *array* gerbong menjadi kolom ke-4.
+```awk
+#Kode Sebelum Revisi
+gerbong[$3] = 1
+
+#Kode Sesudah Revisi
+gerbong[$4] = 1
+```
+
+#### 2. Output Opsi D
+- **Kendala:** Output yang dihasilkan tidak tepat 37 tahun karena adanya sisa nilai desimal dari hasil pembagian yang dibulatkan otomatis ke atas oleh sistem.
+- **Revisi:** Menambahkan fungsi pembulatan angka ke bawah (int()) pada perhitungan rata-rata usia di blok END untuk membuang sisa angka desimal.
+```awk
+#Kode Sebelum Revisi
+rata_rata = total_usia / total_penumpang
+
+#Kode Sesudah Revisi
+rata_rata = int(total_usia / total_penumpang)
+```
+
+#### 3. Output Opsi E
+- **Kendala:** Hasil perhitungan penumpang Business Class kosong atau tidak bertambah. Penyebabnya: target kolom yang salah, serta ketidaksesuaian teks (di CSV tertulis Business, bukan Business Class).
+- **Revisi:** Memindahkan target pengecekan ke kolom ke-3, dan menyesuaikan teks yang dicari.
+```awk
+#Kode Sebelum Revisi
+if ($4 == "Business Class") {
+    total_bisnis = total_bisnis + 1
+}
+#Kode Sesudah Revisi
+if ($3 == "Business") {
+    total_bisnis = total_bisnis + 1
+}
+```
+
+## Output Setelah Revisi
+
+<img width="578" height="402" alt="Output Setelah Revisi" src="https://github.com/user-attachments/assets/fb0ec5a8-9a10-49d1-a944-ca90ba350075" />
+
 ---
 
 ## Soal 2
